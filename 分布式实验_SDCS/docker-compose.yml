@@ -1,0 +1,14 @@
+version: '3'
+services:
+  server1:
+    build: .
+    command: /root/cache 1
+    network_mode: host
+  server2:
+    build: .
+    command: /root/cache 2
+    network_mode: host
+  server3:
+    build: .
+    command: /root/cache 3
+    network_mode: host

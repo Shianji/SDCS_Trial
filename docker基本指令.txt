@@ -1,0 +1,50 @@
+docker是需要root权限的，如果没有root权限的普通用户将没有办法操作docker
+
+启动docker服务：sudo systemctl start docker
+关闭docker服务：sudo systemctl stop docker
+重启docker服务：sudo systemctl restart docker
+开启系统启动时docker自启动：sudo systemctl enable docker
+关闭系统启动时docker自启动：sudo systemctl disable docker
+
+获取帮助信息：docker --help
+
+镜像相关命令：
+镜像拉取：docker pull 镜像名称[:tag] （其中tag为版本号，若不加则默认拉取最新版本latest）也可以使用国内的一些仓库，比如http://daocloud.io/
+查看本地已有的镜像：docker images
+删除本地镜像：docker rmi 镜像ID或者镜像名字 （若镜像被某个容器使用了，则需要先删除相关的所有容器再进行才能删除该镜像）
+镜像的导出：docker save -o 导出的路径及文件名 镜像的ID
+镜像的导入：docker load -i 镜像的名称 （就是上面的导出时的路径名称）
+修改镜像名称：docker tag 镜像ID 新镜像名称:版本
+（在官网仓库获取镜像时会有镜像的更详细的使用方法）
+
+容器相关命令：
+运行或创建容器：docker run -d -p 宿主机端口号:容器端口号 --name 容器名称 镜像的ID或名称:版本 （其中-d表示在后台运行）
+显示当前（正在运行的）所有容器：docker ps（若在后面加上-a则没在运行的容器也会被显示出来）
+查看容器的日志：docker logs -f 容器ID （其中-f表示实时输出日志，可以通过Ctrl+C来停止实时跟踪）
+进入容器内部：docker exec -it 容器ID bash （其中-i表示保持标准输入打开，-t表示以交互模式运行容器内的命令，bash指要在容器中执行的命令，这里是启动一个 Bash shell）
+退出容器：exit
+暂停运行中的容器：docker pause 容器ID
+将暂停的容器恢复运行：docker unpause 容器ID
+停止运行中的容器：docker stop 容器ID
+停止所有运行的容器：docker stop $(docker ps -qa)
+启动容器：docker start 容器ID
+删除容器：docker rm 容器ID （删除容器前要先停止容器）
+将宿主机文件拷贝到容器中：docker cp 宿主机文件路径 容器ID:容器中的文件路径
+
+数据卷volume：（将宿主机的一个目录映射到容器中的某个目录，然后就可以在宿主机中操作目录中的内容，二者会同步变化）
+创建数据卷：docker volume create 数据卷名称 （系统会自动将该数据卷映射到宿主机目录：/var/lib/docker/volumes/数据卷名称/_data）
+查看某个数据卷信息：docker volume inspect 数据卷名称
+查看所有数据卷：docker volume ls
+删除某个数据卷：docker volume rm 数据卷名称
+映射数据卷方法1（先手动创建数据卷然后在创建容器时加上-v参数使用数据卷名称映射）：docker run -v 数据卷名称:容器内的文件路径 镜像名称:版本
+映射数据卷方法2（在创建容器时使用宿主机路径映射，让系统自动创建数据卷）：docker run -v 宿主机文件路径:容器内的文件路径 镜像名称:版本
+
+自定义镜像：
+Dockerfile：可以将任意的命令行中可以调用的命令写入到Dockerfile中，然后Docker会通过读取该文件来自动生成映像（该文件包含FROM(指明父镜像)、RUN、CMD、ENV(配置环境变量)、EXPOSE(指定 与外界交互的端口)等指令）
+构建映像：docker build -f Dockerfile所在的文件路径
+
+Docker-Compose可以用来批量管理容器（即将所有需要构建的容器写入docker-compose.yml文件中，交给docker-compose批量管理运行或停止，相当于将所有docker run创建容器的命令写到了一起），docker-compose可以和Dockerfile一起使用
+
+
+
+

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+//设定最后生成的go文件是在哪个目录哪个包中，.代表当前目录，json_cache代表生成的go文件的包名是json_cache，用分号隔开
+option go_package = ".;json_cache";
+
+
+//这里定义了一个Cache服务，在这个服务中有三个方法：Post、Get和Delete
+service Cache {
+  rpc Post (PostRequest) returns (PostResponse);
+  rpc Get (GetRequest) returns (GetResponse);
+  rpc Delete (DeleteRequest) returns (DeleteResponse);
+}
+
+// PostRequest中有两个成员key和value，即需要存储的key值和对应的value值
+message PostRequest {
+  string key = 1;
+  string value = 2;
+}
+
+// PostResponse为空
+message PostResponse {
+
+}
+
+// GetRequest中有一个成员key，即需要查询的key值
+message GetRequest {
+  string key = 1;
+}
+
+// GetResponse中有一个成员value，即所查询的key对应的value值
+message GetResponse {
+  string value = 1;
+}
+
+// DeleteRequest中有一个成员key，即需要删除的key值
+message DeleteRequest {
+  string key = 1;
+}
+
+// DeleteResponse中有一个成员key，即删除的数量
+message DeleteResponse {
+  int32 num= 1;
+}
